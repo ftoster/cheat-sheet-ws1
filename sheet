@@ -1,0 +1,394 @@
+			For the Vs code
+{
+    "label": "TurtleBro10",
+    "root": "/home/pi",
+    "host": "192.168.1.10",
+    "port": 22,
+    "username": "pi",
+    "password": "brobro"
+}			
+						
+Vs code
+Arduino 
+Fast led в ардуино
+Подключение через ip - ssh pi@192.168.x.x
+
+			
+			\\\\\\\Модуль А1. Приемка робота//////
+			
+1. Подключим робота к новой сети WiFI
+В корне робота (4gb), найти wpa_suplicant.conf. 
+В консоле через команду sudo nana (путь файла wpa_suplicant.conf). 
+Прописать ssid сети и psk сети.
+1.1 Изменим назвапние робота
+Для этого после действий (1.) вставляем карту памяти обратно в робота и ждем +-1минуту.
+Далее подключаемся по ssh к роботу.
+Для этого проптсываем команду в терминале ssh pi@turtlebro01.local
+И поподаем в корневую дерикторию, где 2 раза приписываем "cd ..", а затем пишем "ls"
+Далее переходим в папку etc:
+	1.Вносим изменения в файл hosts, для этого прописываем в терминале "sudo nano hosts" и редактируе в нем 6 строку, где вместо "turtlebro01" ---> "turtlebro(номер робота без скобок)"
+	2.Вносим изменение в файл hostname, для этого прописываем в терминале "sudo nano hostname" и изменяем, вместо "turtlebro01" ---> "turtlebro(номер робота без скобок)"
+Теперь можем подключитсмя по ssh pi@turtlebro(номер робота без скобок).local
+
+2.Продемонстрировать внесенные изменения(1.1 - команды 1 и 2) экспертам
+ 2.2 Продемострировать ip адрес, для этого надо ввести ifconfig и найти параметр wlan0 (inet - xxx.xxx.x.xx)
+ 
+
+ 
+ 
+ 			\\\\\\\Модуль А2. Проверка базовой информации робота//////
+
+1. Linux дистрибутив - lsb_release -a (до "10")
+
+2. Codename - line 5
+
+3. python3 --version
+
+4. rosversion rospy
+
+5. vcgencmd measure_temp
+
+6.rosversion turtlebro
+
+7, 8.rosservice call /board_info "request: {}"
+
+9.free
+
+10.timedatectl status | grep "Time zone"
+
+11.cat /boot/version
+
+			\\\\\\\Модуль А3. Проверка модуля сетевого подключения//////
+
+1.sudo iwlist wlan0 scan | grep -e ESSID -e Frequency
+
+sudo raspi-config
+
+			\\\\\\\Модуль А4. Проверка ROS процессо//////
+
+1.rostopic list
+
+2.Сверка происходит на сайте "Работают топики" https://manual.turtlebro.ru/paket-turtlebro/params
+
+3.rospack list-names
+
+4.https://manual.turtlebro.ru/administrirovanie-ros/raspberrypi
+
+			\\\\\\\Модуль А5. Проверка работы камеры//////
+
+1. cd ..(2x)
+   ls
+   (video 0 и video 1)
+
+2.Физически вынуть кабель из порта и посмотреть (ls), далее вставить кабель и нажимаем кнопку reset, и повторяем шаг 1
+
+3.https://manual.turtlebro.ru/paket-turtlebro/video
+
+4.roslaunch turtlebro camera_ros.launch
+
+			\\\\\\\Модуль А6. Проверка одометрии колес//////
+				
+				Можно выполнить в WEB - интерфейсе
+				
+1.1,2.rostopic echo /odom
+2.1.Для старта
+
+rostopic pub /cmd_vel geometry_msgs/Twist "linear:
+  x: 0.1
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0"
+
+ Для остановки
+
+rostopic pub /cmd_vel geometry_msgs/Twist "linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0"
+
+2.2.Для проезда назад
+
+rostopic pub /cmd_vel geometry_msgs/Twist "linear:
+  x: -0.1
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0"
+
+Для остановки
+
+rostopic pub /cmd_vel geometry_msgs/Twist "linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0"
+
+2.3.Нажать кнопку reset на роботе
+    rosservice call /reset
+
+2.4 Для врашения по в лево по оси Z, демонстрируем результат
+
+rostopic pub /cmd_vel geometry_msgs/Twist "linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.1" 
+
+2.5.Для врашения по в право по оси Z, демонстрируем результат
+
+rostopic pub /cmd_vel geometry_msgs/Twist "linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.1" 
+
+2.6. ??
+
+			\\\\\\\A7. Проверка состояния аккумуляторной батареи//////
+1.rostopic echo /bat -n 1 - выдает все сведенья о батареи 
+
+2.rosmsg show sensor_msgs/BatteryState - POWER_SUPPLY_STATUS - сверка со статусом
+
+3.??
+
+			\\\\\\\A8. Проверка IMU датчика//////
+1.rostopic echo /imu -n 1
+
+2.rostopic hz /imu  -  https://manual.turtlebro.ru/plata-turtleboard/topics
+
+3.Установить пакет - sudo apt install ros-noetic-rviz-imu-plugin (на компютере)
+
+  Устанвим на РОБОТА - git clone https://github.com/voltbro/turtlebro_navigation.git
+  
+  соединим робота и комп
+   export ROS_MASTER_URI='http://(ip робота - без скобок):11311/' 
+
+   export ROS_HOSTNAME=(ip компа)
+   
+   Запускаем в роботе - roslaunch turtlebro_navigation turtlebro_slam_navigation.launch
+   
+   На компьютере пропишем rviz
+   
+   add -> imu, robotmodel -> ok
+   
+   imu - > Topic -> /imu
+
+4.???
+
+			\\\\\\\A9. Проверка МК tmega//////
+			
+1.1.Скачаем тестовую прошивку https://github.com/voltbro/ws-sro
+
+1.1)Скачиваем Arduino
+1.2)Выполнить все требования Arduino
+1.3)Скачиваем в Arduino, библиотеку FastLed -> инструменты -> Управление библеотеками
+1.4)Открываем скетчь с (п1.1.) - Turtlebro-tester
+1.5)Выбираем в инструментах плату Mega2560
+1.6)Выбираем в инструментах нужный порт
+
+1.2.Загружаем скетчь на плату
+
+1.3.3 ??
+
+1.3.4 ????
+
+2.1.скачиваем с робота файл ros_lib_noetic.tar.gz
+scp pi@turtlebro32.local:/home/pi/ros_lib_noetic.tar.gz /home/student (пример)
+
+2.2.Распакаовываем архив в /home/(название ПК)/snap/arduino/61/Arduino/libraries
+
+2.3.1)Открываем скетчь с (п1.1.) - TB-ros-tester
+2.3.2)Выбираем в инструментах плату Mega2560
+2.3.3)Выбираем в инструментах нужный порт
+
+2.3. Zагружаем скетчь на плату
+
+2.3.1 проверячем работу скетча
+	rostopic list
+	rostopic echo /arduino_connect_tester
+	
+2.3.2 ??
+
+2.3.3 ??
+
+			\\\\\\\B1. Проверка сервисных пакетов//////
+
+	cd catkin_ws			
+
+1. git pull в дерриктории с ws_serv_a
+
+2.catkin_make --pkg ws_serv_a
+
+3.sudo install python
+  pip install tqdm
+  python service_configuration.py 
+
+4.configuration checksum : 4103.2
+
+
+			\\\\\\\B2. Обновление версии сервисных пакетов//////
+			
+	cd catkin_ws
+	
+1. git pull (если версия старая)
+
+2. git log - просмотр id commit-а
+ 
+3. git reset --hard (id коммита)
+
+4. catkin_make --pkg ws_serv_b ??
+
+5. sudo install python
+   pip install tqdm
+   python service_configuration.py
+
+6. configuration checksum : 0x90ABFDA8
+
+	\\\\\\\B3. Работа с различными ветками в репозитории сервисных пакетов//////
+	
+1. git branch -r
+
+2. git checkout dev
+   git branch
+
+3. git checkout new
+   git branch
+   
+4. git log
+
+5. git checkout new
+   git log (найдем нужную версию)
+   git reset --hard (id ветки)
+   
+6. ?? catkin_make --pkg ws_serv_c
+  
+7. вернуться в папку ws_serv_c, папка script
+   python (название)
+   
+8. configuration checksum : 
+
+			\\\\\\\B4. Сервисная работа с логами робота//////
+
+1.cd /home/pi/.ros_ws/log/
+
+2.grep -r "Start WebServer"  *.log
+
+3.grep -r "10.8.0.9" webserver-9.log | grep -c  "GET" 
+
+4.find ./log/ -name "*.log" | while read xx; do grep -l "Start WebServer" $xx ; done | while read yy; do dirname $yy ; done | sort -u
+
+find ./log/ -name "*.log" | while read xx; do grep -L "Start WebServer" $xx ; done | while read yy; do dirname $yy ; done | sort -u
+
+1.du -sh log
+
+2. #!/bin/bash
+find . -type d -maxdepth 1 -mindepth 1| xargs -i tar -cvzf {}.tar.gz {}
+
+
+			\\\\\\\С2. Тестирование оборудования//////
+1. Установить звук
+
+2. aplay hello.wav
+
+
+			\\\\\\\D1. Проверка автономной навигации на роботе//////
+			
+1. roslaunch turtlebro_navigation turtlebro_slam_navigation.launch open_rviz:=0
+
+2. На компьютере:
+   export ROS_HOSTNAME=(ip компьютера)
+   export ROS_MASTER_URI='http://(ip робота):11311/'
+   rviz
+   
+   В рвизе добовляем
+   1.модель робота
+   by topic
+   2.map
+   3.laser scan
+   4./local_scan -> path
+   
+3. rosrun map_server map_saver -f mymap    
+   scp pi@turtlebro32.local:/home/pi/mymap.yaml /home/ropotics-pc - (пример)
+   scp pi@turtlebro32.local:/home/pi/mymap.pgm /home/ropotics-pc - (пример)
+   
+   		\\\\\\\D2. Проверка функций патрулирования и экскурсовода//////
+
+1. Проработать тоже самое, что и в D1 или не выключать D1
+
+2. rostopic echo /odom - записать все сюда
+
+	/catkin_ws/src/turtlebro_patrol/data/goals.xml
+	
+	catkin_make --pkg turtlebro_patrol
+
+3. roslaunch turtlebro_patrol patrol.launch
+
+4.1 rostopic pub /patrol_control std_msgs/String "data: 'start'" 
+
+4.2 rostopic pub /patrol_control std_msgs/String "data: 'pause'" 
+
+4.3 rostopic pub /patrol_control std_msgs/String "data: 'resume'"
+
+4.3 rostopic pub /patrol_control std_msgs/String "data: 'shutdown'"
+
+5. roslaunch turtlebro_excursions excursion.launch
+
+5.1 echo "Привет Мир" | festival --tts --language russian
+
+5.2 roslaunch turtlebro_excursions excursion.launch
+
+5.3 rostopic pub /patrol_control std_msgs/String "data: 'start'"
+
+
+
+machine_ip=$(hostname  -I | cut -f1 -d' ')
+export ROS_HOSTNAME=$machine_ip
+export ROS_IP=$machine_ip
+export ROS_MASTER_URI=http://$machine_ip:11311
+export ROVER_MODEL=turtlebro
+export ROVER_WHEEL_PARAM=12280
+
+
+   		\\\\\\\E1. Стендовые испытания//////
+
+1.sudo apt install festvox-kdlpc16k
+
+
+		\\\\\\\F1, F2. Програмирование//////
+1.Загрузить на робота Excursion, Patrol, run.py (Если ошибка то chmod +x *)(Turtebro_patrol, turtlebro_excursion)
+
+2. Пересобрать эти два пакета
+
+3.Записать координаты и озвучку в условия скрипта point_service_view (Ru/Eng) (turtlebro_excursion/src)
+
+4.Пересобрать пакет turtlebro_excursion
+
+5.Загрузить в зависимости от модуля .ino файл на
+ робота
+ 	
+ 	Последовательность 
+
+1.Запустить run.py на роботе
+
+D25 - смена маршрута / языка
+
+D23 - подтверждение (если после выбора языка робот не стартует, удерживать)
+
