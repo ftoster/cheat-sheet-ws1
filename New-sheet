@@ -1,0 +1,72 @@
+-------------------Методы подключения---------------------
+Стандартные методы:
+etc/wpa_supplicant изменнить файл wpa_supplicant.conf :
+ 
+network={
+        ssid="Имя_Сети"
+        psk="Пароль"
+            }
+            
+
+sudo find / -name ".wpa_supplicant.conf.swp"
+
+sudo find / -name ".hostname.swp"
+
+sudo rm -rf /media/student/rootfs/etc/.hostname.swp
+
+sudo rm -rf /media/student/rootfs/etc/.wpa_supplicant.conf.swp /media/student/rootfs/etc/wpa_supplicant/.wpa_supplicant.conf.swp
+
+После подключаемся по ssh
+
+С использованием ROS:
+export ROS_MASTER_URI='http://192.168.1.35:11311/' (ip робота)
+export ROS_HOSTNAME=192.168.1.42 (ip компа)
+
+----------------Использование Grep----------------------------
+grep -(флаги) "Поиск того что нужно"
+timedatectl status | grep "Time zone" - для того чтобы узнать мой регион
+iwlist scan wlo1 | grep -E "название"\|"частота" - это для проверки частоты моего соединения
+
+--------------------ROS--------------------------------------
+rostopic list / echo / pub / hz / 
+Доп инфа - http://wiki.ros.org/rostopic
+
+roslaunch - Нужен для запуска ROS пакетов
+roslaunch package_name file.launch
+Доп инфа - http://wiki.ros.org/roslaunch
+
+rosservice call / list / info /
+Доп инфа - http://wiki.ros.org/rosservice
+
+rosmsg show
+Доп инфа - http://wiki.ros.org/rosmsg
+--------------------GIT--------------------------------------
+Как создать секретный ключ:
+Далее переходим снова на github и переходим в settings >>
+ >> Переходим в секцию Developer settings >> 
+  >> Personal access token >>  
+   >> Tokens (calssic) >>
+    >> generate new token >>
+     >> generate new token (calssic) >>
+         >> Выбираем все >>
+          >> Нажимаем Generate >>
+           >> Копируем ключ
+
+git config --global user.name "John Doe" //Ваше имя
+git config --global user.email "johndoe@example.com" //Ваш e-mail
+
+git init - инициализация 
+git pull - обновление 
+git log - просмотр id commit-а
+git reset --hard (id коммита) - обновление до определенной версии
+git branch -r - все ветки
+git checkout dev - перемещение на ветку
+git push - для того чтобы залить коммит
+git remote -v - привязка на локальный репо.
+git remote remove origin - удаление origin
+git remote add origin https://github.com/ТВОЙ НИК/НАЗВАНИЕ.git - добовление нового
+git fetch origin -  для загрузки содержимого из удаленного репозитория
+git merge origin/main - совмещение 2ух веток
+git add . - добовление в коммит
+git commit -m "Комментарий" - коммит
+
