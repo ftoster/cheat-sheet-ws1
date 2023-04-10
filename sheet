@@ -13,28 +13,6 @@ Arduino
 Fast led в ардуино
 Подключение через ip - ssh pi@192.168.x.x
 
-			
-			\\\\\\\Модуль А1. Приемка робота//////
-			
-1. Подключим робота к новой сети WiFI
-В корне робота (4gb), найти wpa_suplicant.conf. 
-В консоле через команду sudo nana (путь файла wpa_suplicant.conf). 
-Прописать ssid сети и psk сети.
-1.1 Изменим назвапние робота
-Для этого после действий (1.) вставляем карту памяти обратно в робота и ждем +-1минуту.
-Далее подключаемся по ssh к роботу.
-Для этого проптсываем команду в терминале ssh pi@turtlebro01.local
-И поподаем в корневую дерикторию, где 2 раза приписываем "cd ..", а затем пишем "ls"
-Далее переходим в папку etc:
-	1.Вносим изменения в файл hosts, для этого прописываем в терминале "sudo nano hosts" и редактируе в нем 6 строку, где вместо "turtlebro01" ---> "turtlebro(номер робота без скобок)"
-	2.Вносим изменение в файл hostname, для этого прописываем в терминале "sudo nano hostname" и изменяем, вместо "turtlebro01" ---> "turtlebro(номер робота без скобок)"
-Теперь можем подключитсмя по ssh pi@turtlebro(номер робота без скобок).local
-
-2.Продемонстрировать внесенные изменения(1.1 - команды 1 и 2) экспертам
- 2.2 Продемострировать ip адрес, для этого надо ввести ifconfig и найти параметр wlan0 (inet - xxx.xxx.x.xx)
- 
-
- 
  
  			\\\\\\\Модуль А2. Проверка базовой информации робота//////
 
@@ -178,12 +156,15 @@ angular:
 
   Устанвим на РОБОТА - git clone https://github.com/voltbro/turtlebro_navigation.git
   
+  sudo apt install ros-noetic-rviz-imu-plugin
+  
   соединим робота и комп
    export ROS_MASTER_URI='http://(ip робота - без скобок):11311/' 
 
    export ROS_HOSTNAME=(ip компа)
    
    Запускаем в роботе - roslaunch turtlebro_navigation turtlebro_slam_navigation.launch
+   
    
    На компьютере пропишем rviz
    
@@ -328,6 +309,14 @@ find . -type d -maxdepth 1 -mindepth 1| xargs -i tar -cvzf {}.tar.gz {}
 3. rosrun map_server map_saver -f mymap    
    scp pi@turtlebro32.local:/home/pi/mymap.yaml /home/ropotics-pc - (пример)
    scp pi@turtlebro32.local:/home/pi/mymap.pgm /home/ropotics-pc - (пример)
+   
+   
+   В файле .ros_params, расположенный в директории /home/pi робота Turtlebro, проверить значение
+   переменной окружения ROVER_WHEEL_PARAM для задания коэффициента вращения моторов. Для старых
+   моторов параметр ROVER_WHEEL_PARAM должен равняться 22500, для новых моторов этот параметр 
+   должен быть равен 12280.
+   
+   
    
    		\\\\\\\D2. Проверка функций патрулирования и экскурсовода//////
 
