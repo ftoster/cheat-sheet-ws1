@@ -231,47 +231,53 @@ find . -type d -maxdepth 1 -mindepth 1| xargs -i tar -cvzf {}.tar.gz {}
 3. aplay hello.wav
 
 
-			\\\\\\\D1. Проверка автономной навигации на роботе//////
+
+
+ \\\\\\\D1. Проверка автономной навигации на роботе//////
 			
 1. roslaunch turtlebro_navigation turtlebro_slam_navigation.launch open_rviz:=0
 
 2. На компьютере:
-   export ROS_HOSTNAME=(ip компьютера)
-   export ROS_MASTER_URI='http://(ip робота):11311/'
-   rviz
+   export ROS_HOSTNAME=(ip компьютера)                       127.0.0.1
+   export ROS_MASTER_URI='http://(ip робота):11311/'         192.168.178.209
    
    В рвизе добовляем
    1.модель робота
    by topic
    2.map
    3.laser scan
-   4./local_scan -> path
+   4./local_plan -> path
    
 3. rosrun map_server map_saver -f mymap    
-   scp pi@turtlebro32.local:/home/pi/mymap.yaml /home/ropotics-pc - (пример)
-   scp pi@turtlebro32.local:/home/pi/mymap.pgm /home/ropotics-pc - (пример)
+	на компе  
+   sudo scp pi@turtlebro32.local:/home/pi/mymap.yaml /home/student - (пример)
+   sudo scp pi@turtlebro32.local:/home/pi/mymap.pgm /home/student - (пример)
+   
+   продемострировать сохраненную карту
    
    
-   В файле .ros_params, расположенный в директории /home/pi робота Turtlebro, проверить значение
-   переменной окружения ROVER_WHEEL_PARAM для задания коэффициента вращения моторов. Для старых
-   моторов параметр ROVER_WHEEL_PARAM должен равняться 22500, для новых моторов этот параметр 
-   должен быть равен 12280.
-   
-   
-   
-   		\\\\\\\D2. Проверка функций патрулирования и экскурсовода//////
+                 \\\\\\\D2. Проверка функций патрулирования и экскурсовода//////
+	ssh fs
 
-1. Проработать тоже самое, что и в D1 или не выключать D1
-
-2. rostopic echo /odom - записать все сюда
-
-	/catkin_ws/src/turtlebro_patrol/data/goals.xml
+2. rostopic echo /odom 
+    через :8080 прокатать в две точки (по указаниям эксперта)
+	
+	cd catkin_ws/
 	
 	catkin_make --pkg turtlebro_patrol
+	
+	
+	(в vs)            /catkin_ws/src/turtlebro_patrol/data/goals.xml
+	
+	(в терминале)     cd catkin_ws/src/turtlebro_patrol/data    nano goals.xml
+	
+3. roslaunch turtlebro_navigation turtlebro_slam_navigation.launch
 
-3. roslaunch turtlebro_patrol patrol.launch
+3.1 roslaunch turtlebro_patrol patrol.launch
 
 4.1 rostopic pub /patrol_control std_msgs/String "data: 'start'" 
+
+	rosservice call /patrol_control "command: 'start'" 
 
 4.2 rostopic pub /patrol_control std_msgs/String "data: 'pause'" 
 
@@ -279,16 +285,32 @@ find . -type d -maxdepth 1 -mindepth 1| xargs -i tar -cvzf {}.tar.gz {}
 
 4.3 rostopic pub /patrol_control std_msgs/String "data: 'shutdown'"
 
-5. roslaunch turtlebro_excursions excursion.launch
+5.1 nano /etc/ros/turtlebro.d/turtlebro.launch 
+
+	<arg name="run_turtlebro_web" default="false"/>
+	<arg name="run_camera_ros" default="true"/>	
+
+5.	cd catkin_ws/
+	
+	catkin_make --pkg turtlebro_excursions
+	
+ roslaunch turtlebro_excursions excursion.launch
 
 5.1 echo "Привет Мир" | festival --tts --language russian
 
-5.2 roslaunch turtlebro_excursions excursion.launch
+  добваить точки (в vs) catkin_ws/src/turtlebro_excursions/src/point_service_view.py
+
+5.2 roslaunch turtlebro_excursions excursion_aruco.launch
 
 5.3 rostopic pub /patrol_control std_msgs/String "data: 'start'"
-
-
-
+	
+   
+   В файле .ros_params, расположенный в директории /home/pi робота Turtlebro, проверить значение
+   переменной окружения ROVER_WHEEL_PARAM для задания коэффициента вращения моторов. Для старых
+   моторов параметр ROVER_WHEEL_PARAM должен равняться 22500, для новых моторов этот параметр 
+   должен быть равен 12280.
+  
+  
 machine_ip=$(hostname  -I | cut -f1 -d' ')
 export ROS_HOSTNAME=$machine_ip
 export ROS_IP=$machine_ip
