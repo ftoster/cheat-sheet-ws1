@@ -74,72 +74,10 @@ sudo raspi-config
 1.1,2.rostopic echo /odom
 2.1.Для старта
 
-rostopic pub /cmd_vel geometry_msgs/Twist "linear:
-  x: 0.1
-  y: 0.0
-  z: 0.0
-angular:
-  x: 0.0
-  y: 0.0
-  z: 0.0"
-
- Для остановки
-
-rostopic pub /cmd_vel geometry_msgs/Twist "linear:
-  x: 0.0
-  y: 0.0
-  z: 0.0
-angular:
-  x: 0.0
-  y: 0.0
-  z: 0.0"
-
-2.2.Для проезда назад
-
-rostopic pub /cmd_vel geometry_msgs/Twist "linear:
-  x: -0.1
-  y: 0.0
-  z: 0.0
-angular:
-  x: 0.0
-  y: 0.0
-  z: 0.0"
-
-Для остановки
-
-rostopic pub /cmd_vel geometry_msgs/Twist "linear:
-  x: 0.0
-  y: 0.0
-  z: 0.0
-angular:
-  x: 0.0
-  y: 0.0
-  z: 0.0"
-
 2.3.Нажать кнопку reset на роботе
     rosservice call /reset
 
 2.4 Для врашения по в лево по оси Z, демонстрируем результат
-
-rostopic pub /cmd_vel geometry_msgs/Twist "linear:
-  x: 0.0
-  y: 0.0
-  z: 0.0
-angular:
-  x: 0.0
-  y: 0.0
-  z: 0.1" 
-
-2.5.Для врашения по в право по оси Z, демонстрируем результат
-
-rostopic pub /cmd_vel geometry_msgs/Twist "linear:
-  x: 0.0
-  y: 0.0
-  z: 0.0
-angular:
-  x: 0.0
-  y: 0.0
-  z: 0.1" 
 
 2.6. ??
 
