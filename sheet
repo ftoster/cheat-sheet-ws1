@@ -289,8 +289,8 @@ find . -type d -maxdepth 1 -mindepth 1| xargs -i tar -cvzf {}.tar.gz {}
 
 			\\\\\\\С2. Тестирование оборудования//////
 1. Установить звук
-
-2. aplay hello.wav
+2. wget <url>
+3. aplay hello.wav
 
 
 			\\\\\\\D1. Проверка автономной навигации на роботе//////
