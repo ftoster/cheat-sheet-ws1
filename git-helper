@@ -49,6 +49,10 @@ git remote add origin https://github.com/ТВОЙ НИК/ws_serv_a.git
 git fetch origin
 git merge origin/main
 
+для лог файлов
+ssh-keygen
+ssh-copy-id user@ip-address
+потом вносим изменения в скрипт 
 ---------------------------------------------------------------------
 Запускаем файл через launch
 
